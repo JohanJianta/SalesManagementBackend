@@ -1,6 +1,6 @@
 generator client {
   provider     = "prisma-client-js"
-  // output       = "./generated/prisma_client"  // Uncomment to stop using the default path: @prisma/client
+  // output       = "./generated_client"  // Uncomment to stop using the default path: @prisma/client
 }
 
 datasource db {

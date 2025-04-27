@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && npx tsc",
+    "build": "rimraf dist && npx tsc && npx prisma migrate deploy && npx prisma generate",
     "prestart": "npm run build",
     "start": "node dist/index.js",
     "preserve": "npm run build",
@@ -19,7 +19,6 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "rimraf": "^6.0.1",
     "salesmanagementbackend": "file:",
     "zod": "^3.24.3"
   },
@@ -32,6 +31,7 @@
     "concurrently": "^9.1.2",
     "nodemon": "^3.1.9",
     "prisma": "^6.6.0",
+    "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
   }
 }
