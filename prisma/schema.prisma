@@ -29,6 +29,8 @@ model clusters {
   id            Int               @id @default(autoincrement()) @db.UnsignedInt
   name          String            @unique(map: "clusters_name_unique") @db.VarChar(255)
   category      clusters_category @default(residential)
+  is_apartment  Boolean           @default(false)
+  address       String            @db.VarChar(255)
   thumbnail_url String            @db.VarChar(255)
   map_url       String            @db.VarChar(255)
   created_at    DateTime          @default(now()) @db.DateTime(0)
@@ -84,7 +86,6 @@ model product_units {
   product_id Int                  @db.UnsignedInt
   name       String               @db.VarChar(50)
   status     product_units_status @default(ready)
-  price      BigInt
   created_at DateTime             @default(now()) @db.DateTime(0)
   updated_at DateTime             @default(now()) @db.Timestamp(0)
   bookings   bookings[]
@@ -98,6 +99,8 @@ model products {
   cluster_id             Int                      @db.UnsignedInt
   name                   String                   @db.VarChar(255)
   brochure_url           String                   @db.VarChar(255)
+  default_price          BigInt                   @db.BigInt
+  corner_price           BigInt                   @db.BigInt
   created_at             DateTime                 @default(now()) @db.DateTime(0)
   updated_at             DateTime                 @default(now()) @db.Timestamp(0)
   product_features       product_features[]
