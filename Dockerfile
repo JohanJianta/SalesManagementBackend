@@ -4,9 +4,7 @@ RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
-COPY ../package*.json ./
-
-COPY .. .
+COPY . .
 
 RUN npm install && npm cache clean --force
 

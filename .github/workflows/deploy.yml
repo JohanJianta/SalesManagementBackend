@@ -55,5 +55,5 @@ jobs:
               -p 3000:3000 \
               ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE }}:latest
 
-            docker image prune -f
+            docker system prune -f
           EOF
