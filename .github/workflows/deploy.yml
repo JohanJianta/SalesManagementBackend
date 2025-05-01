@@ -43,17 +43,13 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
             set -e
 
-            docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE }}:latest
+            cd ~/sales-backend
 
-            docker stop ${{ vars.DOCKER_CONTAINER }} || true
-            docker rm ${{ vars.DOCKER_CONTAINER }} || true
+            docker compose pull
 
-            docker run -d \
-              --name ${{ vars.DOCKER_CONTAINER }} \
-              --restart always \
-              --env-file ~/sales-backend/.env \
-              -p 3000:3000 \
-              ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE }}:latest
+            docker compose down
+
+            docker compose up -d
 
             docker system prune -f
           EOF
