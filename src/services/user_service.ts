@@ -3,15 +3,15 @@ import { FilteredUser } from "../models/dtos/user_dto";
 import { users_role } from "@prisma/client";
 import db from "../configs/database";
 
-export async function getAllUsers(): Promise<FilteredUser[]> {
-  const rows = await db.users.findMany({
+export function getAllUsers(): Promise<FilteredUser[]> {
+  const rows = db.users.findMany({
     select: { id: true, email: true, role: true },
   });
   return rows;
 }
 
-export async function getUserById(id: number): Promise<FilteredUser | null> {
-  const row = await db.users.findUnique({
+export function getUserById(id: number): Promise<FilteredUser | null> {
+  const row = db.users.findUnique({
     where: { id },
     select: { id: true, email: true, role: true },
   });
@@ -41,7 +41,7 @@ export async function createUser(
   role: users_role | undefined
 ): Promise<FilteredUser> {
   const hashedPassword = await hashPassword(password);
-  const result = await db.users.create({
+  const result = db.users.create({
     data: { email, password: hashedPassword, role },
     select: { id: true, email: true, role: true },
   });
