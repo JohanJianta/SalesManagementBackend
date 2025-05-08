@@ -4,6 +4,11 @@ import db from "../configs/database";
 export function getAllClusters(): Promise<FilteredCluster[]> {
   const rows = db.clusters.findMany({
     omit: { created_at: true, updated_at: true },
+    include: {
+      clickable_area: {
+        omit: { created_at: true },
+      },
+    },
   });
   return rows;
 }

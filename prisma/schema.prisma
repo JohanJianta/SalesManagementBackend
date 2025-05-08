@@ -1,5 +1,5 @@
 generator client {
-  provider     = "prisma-client-js"
+  provider = "prisma-client-js"
   // output       = "./generated_client"  // Uncomment to stop using the default path: @prisma/client
 }
 
@@ -26,31 +26,33 @@ model bookings {
 }
 
 model clusters {
-  id              Int               @id @default(autoincrement()) @db.UnsignedInt
-  name            String            @unique(map: "clusters_name_unique") @db.VarChar(255)
-  category        clusters_category @default(residential)
-  is_apartment    Boolean           @default(false)
-  address         String            @db.VarChar(255)
-  thumbnail_url   String            @db.VarChar(255)
-  map_url         String            @db.VarChar(255)
-  created_at      DateTime          @default(now()) @db.DateTime(0)
-  updated_at      DateTime          @default(now()) @db.Timestamp(0)
-  products        products[]
-  clickable_area  clickable_areas?
+  id                Int               @id @default(autoincrement()) @db.UnsignedInt
+  clickable_area_id Int               @unique @db.UnsignedInt
+  name              String            @unique(map: "clusters_name_unique") @db.VarChar(255)
+  category          clusters_category @default(residential)
+  is_apartment      Boolean           @default(false)
+  address           String            @db.VarChar(255)
+  thumbnail_url     String            @db.VarChar(255)
+  map_url           String            @db.VarChar(255)
+  created_at        DateTime          @default(now()) @db.DateTime(0)
+  updated_at        DateTime          @default(now()) @db.Timestamp(0)
+  products          products[]
+  clickable_area    clickable_areas   @relation(fields: [clickable_area_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cluster_clickable_area_id_foreign")
+
+  @@index([clickable_area_id], map: "cluster_clickable_area_id_foreign")
 }
 
 model clickable_areas {
-  id         Int      @id @default(autoincrement()) @db.UnsignedInt
-  cluster_id Int      @unique @db.UnsignedInt
-  top        Float    @db.Float
-  left       Float    @db.Float
-  width      Float    @db.Float
-  height     Float    @db.Float
-  center_x   Float    @db.Float
-  center_y   Float    @db.Float
-  cluster    clusters @relation(fields: [cluster_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "clickable_area_cluster_id_foreign")
-
-  @@index([cluster_id], map: "clickable_area_cluster_id_foreign")
+  id         Int                   @id @default(autoincrement()) @db.UnsignedInt
+  shape      clickable_areas_shape @default(rectangle)
+  x1         Float                 @db.Float
+  y1         Float                 @db.Float
+  x2         Float?                @db.Float
+  y2         Float?                @db.Float
+  radius     Float?                @db.Float
+  created_at DateTime              @default(now()) @db.DateTime(0)
+  cluster    clusters?
+  products   products?
 }
 
 model customers {
@@ -112,6 +114,7 @@ model product_units {
 model products {
   id                     Int                      @id @default(autoincrement()) @db.UnsignedInt
   cluster_id             Int                      @db.UnsignedInt
+  clickable_area_id      Int                      @unique @db.UnsignedInt
   name                   String                   @db.VarChar(255)
   brochure_url           String                   @db.VarChar(255)
   default_price          BigInt                   @db.BigInt
@@ -123,8 +126,10 @@ model products {
   product_specifications product_specifications[]
   product_units          product_units[]
   clusters               clusters                 @relation(fields: [cluster_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "products_cluster_id_foreign")
+  clickable_area         clickable_areas          @relation(fields: [clickable_area_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_clickable_area_id_foreign")
 
   @@index([cluster_id], map: "products_cluster_id_foreign")
+  @@index([clickable_area_id], map: "product_clickable_area_id_foreign")
 }
 
 model users {
@@ -140,6 +145,11 @@ model users {
 enum clusters_category {
   residential
   commercial
+}
+
+enum clickable_areas_shape {
+  rectangle
+  circle
 }
 
 enum product_units_status {
