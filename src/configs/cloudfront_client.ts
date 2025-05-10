@@ -1,16 +1,14 @@
-import { S3Client } from "@aws-sdk/client-s3";
+import { CloudFrontClient } from "@aws-sdk/client-cloudfront";
 import "dotenv/config";
 
-const bucketRegion = process.env.BUCKET_REGION as string;
 const accessKeyId = process.env.ACCESS_KEY_ID as string;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY as string;
 
-const s3 = new S3Client({
-  region: bucketRegion,
+const cloudFront = new CloudFrontClient({
   credentials: {
     accessKeyId: accessKeyId,
     secretAccessKey: secretAccessKey,
   },
 });
 
-export default s3;
+export default cloudFront;

@@ -4,8 +4,8 @@ import userRoutes from "./routes/user_routes";
 import authRoutes from "./routes/auth_routes";
 import clusterRoutes from "./routes/cluster_routes";
 import { AppError } from "./shared/app_error";
-import "dotenv/config";
 import swaggerUIEndpoints from "./utils/swagger_ui";
+import "dotenv/config";
 
 const app = express();
 const port = parseInt(process.env.PORT || "3000", 10);

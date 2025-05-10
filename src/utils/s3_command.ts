@@ -1,6 +1,18 @@
-import { GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import s3, { bucketName } from "../configs/s3_client";
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { CreateInvalidationCommand } from "@aws-sdk/client-cloudfront";
+import { getSignedUrl } from "@aws-sdk/cloudfront-signer";
+import cloudFront from "../configs/cloudfront_client";
+import s3 from "../configs/s3_client";
 import crypto from "crypto";
+import path from 'path';
+import "dotenv/config";
+import fs from 'fs';
+
+const bucketName = process.env.BUCKET_NAME as string;
+const privateKeyPath = process.env.CLOUDFRONT_PRIVATE_KEY_PATH as string;
+const keyPairId = process.env.CLOUDFRONT_KEY_PAIR_ID as string;
+const domainURL = process.env.CLOUDFRONT_URL as string;
+const distId = process.env.CLOUDFRONT_DISTRIBUTION_ID as string;
 
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
 
@@ -16,12 +28,12 @@ export function uploadFileToS3(fileContent: Buffer | string, contentType: string
 }
 
 export function downloadFileFromS3(fileName: string) {
-  const downloadParams = {
-    Bucket: bucketName,
-    Key: fileName,
-  };
-
-  return s3.send(new GetObjectCommand(downloadParams));
+  return getSignedUrl({
+    url: domainURL + fileName,
+    dateLessThan: new Date(Date.now() + 1000 * 3600 * 24),
+    privateKey: fs.readFileSync(path.resolve(privateKeyPath), 'utf8'),
+    keyPairId: keyPairId,
+  });
 }
 
 export function deleteFileFromS3(fileName: string) {
@@ -29,6 +41,17 @@ export function deleteFileFromS3(fileName: string) {
     Bucket: bucketName,
     Key: fileName,
   };
+  s3.send(new DeleteObjectCommand(deleteParams));
 
-  return s3.send(new DeleteObjectCommand(deleteParams));
+  const invalidationParams = {
+    DistributionId: distId,
+    InvalidationBatch: {
+      CallerReference: fileName,
+      Paths: {
+        Quantity: 1,
+        Items: ["/" + fileName],
+      },
+    },
+  }
+  return cloudFront.send(new CreateInvalidationCommand(invalidationParams))
 }
