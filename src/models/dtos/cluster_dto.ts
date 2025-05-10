@@ -1,4 +1,4 @@
-import { clusters_category, clickable_areas_shape, clickable_areas } from "@prisma/client";
+import { clusters_category, clickable_areas_shape } from "@prisma/client";
 
 export interface FilteredCluster {
   id: number;

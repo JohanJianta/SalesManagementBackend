@@ -5,14 +5,15 @@ import authRoutes from "./routes/auth_routes";
 import clusterRoutes from "./routes/cluster_routes";
 import { AppError } from "./shared/app_error";
 import "dotenv/config";
+import swaggerUIEndpoints from "./utils/swagger_ui";
 
 const app = express();
-const port = process.env.EXPRESS_PORT as string || 3000;
+const port = parseInt(process.env.PORT || "3000", 10);
 
 app.use(json());
 app.use("/api", authRoutes);
-app.use("/api/protected", authenticateJWT, userRoutes);
-app.use("/api/protected", authenticateJWT, clusterRoutes);
+app.use("/api", authenticateJWT, userRoutes);
+app.use("/api", authenticateJWT, clusterRoutes);
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof AppError) {
@@ -28,4 +29,6 @@ app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  swaggerUIEndpoints(app);
+  console.log(`Swagger docs available at endpoint /api-docs`);
 });

@@ -1,5 +1,39 @@
 import { z } from "zod";
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     RegisterInput:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           default: janedoe@test.com
+ *         password:
+ *           type: string
+ *           default: janedoe
+ *         role:
+ *           type: enum[admin, sales, manager]
+ *           default: sales
+ *     RegisterResponse:
+ *       type: object
+ *       properties:
+ *         token:
+ *           type: string
+ *         payload:
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: integer
+ *             email:
+ *               type: string
+ *             role:
+ *               type: string
+ */
 export const RegisterSchema = z
   .object({
     email: z
