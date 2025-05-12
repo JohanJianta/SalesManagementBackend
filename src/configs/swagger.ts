@@ -1,5 +1,7 @@
-import swaggerJsDoc from "swagger-jsdoc";
+import { Express, Request, Response } from "express";
 import { version } from "../../package.json";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsDoc from "swagger-jsdoc";
 
 const swaggerOptions: swaggerJsDoc.Options = {
   definition: {
@@ -12,7 +14,7 @@ const swaggerOptions: swaggerJsDoc.Options = {
     servers: [
       {
         url: "http://localhost:3000/api",
-        description: "Local Development Server"
+        description: "Local Development Server",
       },
     ],
     components: {
@@ -31,8 +33,16 @@ const swaggerOptions: swaggerJsDoc.Options = {
     ],
   },
   apis: ["./src/routes/*.ts", "./src/models/schemas/*.ts"],
-}
+};
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
-export default swaggerDocs;
+function swagger(app: Express) {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+  app.get("/api-docs.json", (req: Request, res: Response) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(swagger);
+  });
+}
+
+export default swagger;

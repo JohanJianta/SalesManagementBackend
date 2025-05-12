@@ -23,7 +23,7 @@ const router = Router();
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/RegisterResponse'
+ *                 $ref: '#/components/schemas/AuthResponse'
  *         400:
  *           description: Bad Request
  *         409:
@@ -33,7 +33,34 @@ const router = Router();
  */
 router.post("/auth/register", registerUser);
 
-
+/**
+ * @openapi
+ * paths:
+ *   /auth/login:
+ *     post:
+ *       tags:
+ *        - Auth
+ *       summary: Login a user
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginInput'
+ *       responses:
+ *         200:
+ *           description: Success
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/AuthResponse'
+ *         400:
+ *           description: Bad Request
+ *         401:
+ *           description: Unauthorized
+ *         500:
+ *           description: Internal Server Error
+ */
 router.post("/auth/login", loginUser);
 
 export default router;

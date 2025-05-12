@@ -1,7 +1,13 @@
-import { users_role } from "@prisma/client";
+import { user_role } from "@prisma/client";
 
-export interface FilteredUser {
+export interface UserRequest {
+  email: string;
+  password: string;
+  role?: user_role;
+}
+
+export interface UserResponse {
   id: number;
   email: string;
-  role: users_role;
+  role: user_role;
 }
