@@ -12,13 +12,14 @@ import { z } from "zod";
  *       properties:
  *         email:
  *           type: string
- *           default: janedoe@test.com
+ *           example: johndoe@test.com
  *         password:
  *           type: string
- *           default: janedoe
+ *           example: johndoe
  *         role:
- *           type: enum[admin, sales, manager]
- *           default: sales
+ *           type: string
+ *           enum: [admin, sales, manager]
+ *           example: sales
  *     LoginInput:
  *       type: object
  *       required:
@@ -27,24 +28,29 @@ import { z } from "zod";
  *       properties:
  *         email:
  *           type: string
- *           default: janedoe@test.com
+ *           example: janedoe@test.com
  *         password:
  *           type: string
- *           default: janedoe
+ *           example: janedoe
  *     AuthResponse:
  *       type: object
  *       properties:
  *         token:
  *           type: string
+ *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikp...
  *         payload:
  *           type: object
  *           properties:
  *             id:
  *               type: integer
+ *               example: 1
  *             email:
  *               type: string
+ *               example: johndoe@test.com
  *             role:
  *               type: string
+ *               enum: [admin, sales, manager]
+ *               example: sales
  */
 
 export const RegisterSchema = z

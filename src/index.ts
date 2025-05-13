@@ -4,7 +4,7 @@ import clusterRoutes from "./routes/cluster_routes";
 import userRoutes from "./routes/user_routes";
 import authRoutes from "./routes/auth_routes";
 import { AppError } from "./utils/app_error";
-import swagger from "./configs/swagger";
+import swaggerApp from "./configs/swagger";
 import multer from "multer";
 import "dotenv/config";
 
@@ -34,6 +34,6 @@ app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  swagger(app);
+  swaggerApp(app);
   console.log(`Swagger available at endpoint /api-docs`);
 });

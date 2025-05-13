@@ -2,6 +2,10 @@ import { Express, Request, Response } from "express";
 import { version } from "../../package.json";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
+import "dotenv/config";
+
+const ec2PublicIp = process.env.EC2_PUBLIC_IP as string;
+const port = parseInt(process.env.PORT || "3000", 10);
 
 const swaggerOptions: swaggerJsDoc.Options = {
   definition: {
@@ -13,8 +17,12 @@ const swaggerOptions: swaggerJsDoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000/api",
+        url: `http://localhost:${port}/api`,
         description: "Local Development Server",
+      },
+      {
+        url: `http://${ec2PublicIp}:${port}/api`,
+        description: "EC2 Production Server",
       },
     ],
     components: {
@@ -32,17 +40,17 @@ const swaggerOptions: swaggerJsDoc.Options = {
       },
     ],
   },
-  apis: ["./src/routes/*.ts", "./src/models/schemas/*.ts"],
+  apis: ["./src/routes/*.ts", "./src/models/schemas/*.ts", "./src/models/dtos/*.ts"],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
-function swagger(app: Express) {
+function swaggerApp(app: Express) {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
   app.get("/api-docs.json", (req: Request, res: Response) => {
     res.setHeader("Content-Type", "application/json");
-    res.send(swagger);
+    res.send(swaggerDocs);
   });
 }
 
-export default swagger;
+export default swaggerApp;

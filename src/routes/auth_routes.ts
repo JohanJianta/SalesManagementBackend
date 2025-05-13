@@ -9,8 +9,9 @@ const router = Router();
  *   /auth/register:
  *     post:
  *       tags:
- *        - Auth
+ *         - Auth
  *       summary: Register a new user
+ *       security: []
  *       requestBody:
  *         required: true
  *         content:
@@ -39,8 +40,9 @@ router.post("/auth/register", registerUser);
  *   /auth/login:
  *     post:
  *       tags:
- *        - Auth
+ *         - Auth
  *       summary: Login a user
+ *       security: []
  *       requestBody:
  *         required: true
  *         content:
