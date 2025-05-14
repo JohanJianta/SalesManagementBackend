@@ -14,12 +14,12 @@ app.use(json());
 app.use("/api", authRoutes);
 app.use("/api", authenticateJWT, userRoutes);
 app.use("/api", authenticateJWT, clusterRoutes);
+swaggerApp(app);
 
 app.use(endpointNotFoundHandler);
 app.use(globalErrorHandler);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  swaggerApp(app);
   console.log(`Swagger available at endpoint /api-docs`);
 });
