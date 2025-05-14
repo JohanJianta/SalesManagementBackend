@@ -5,12 +5,15 @@ import userRoutes from "./routes/user_routes";
 import authRoutes from "./routes/auth_routes";
 import swaggerApp from "./configs/swagger";
 import express, { json } from "express";
+import cors from "cors";
 import "dotenv/config";
 
 const app = express();
 const port = parseInt(process.env.PORT || "3000", 10);
 
+app.use(cors());
 app.use(json());
+
 app.use("/api", authRoutes);
 app.use("/api", authenticateJWT, userRoutes);
 app.use("/api", authenticateJWT, clusterRoutes);

@@ -17,10 +17,6 @@ const swaggerOptions: swaggerJsDoc.Options = {
     },
     servers: [
       {
-        url: `http://localhost:${port}/api`,
-        description: "Local Development Server",
-      },
-      {
         url: `http://${ec2PublicIp}:${port}/api`,
         description: "EC2 Production Server",
       },

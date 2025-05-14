@@ -28,10 +28,10 @@ import { z } from "zod";
  *       properties:
  *         email:
  *           type: string
- *           example: janedoe@test.com
+ *           example: johndoe@test.com
  *         password:
  *           type: string
- *           example: janedoe
+ *           example: johndoe
  *     AuthResponse:
  *       type: object
  *       properties:
