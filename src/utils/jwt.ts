@@ -1,14 +1,14 @@
-import { FilteredUser } from "../models/dtos/user_dto";
+import { UserResponse } from "../models/dtos/user_dto";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 
-const JWT_SECRET = process.env.JWT_SECRET || "YOU-R-MY-SUNSHINE";
-const JWT_EXPIRES_IN = "7d";
+const jwtSecret = process.env.JWT_SECRET as string;
+const jwtExpiresIn = "7d";
 
-export function generateToken(payload: FilteredUser): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+export function generateToken(payload: UserResponse): string {
+  return jwt.sign(payload, jwtSecret, { expiresIn: jwtExpiresIn });
 }
 
-export function verifyToken(token: string): FilteredUser {
-  return jwt.verify(token, JWT_SECRET) as FilteredUser;
+export function verifyToken(token: string): UserResponse {
+  return jwt.verify(token, jwtSecret) as UserResponse;
 }

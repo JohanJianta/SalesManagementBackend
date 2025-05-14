@@ -1,6 +1,7 @@
 node_modules/
 dist/
 prisma/generated_client/
+keys/
 .env
 .git
 .github

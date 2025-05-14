@@ -1,27 +1,24 @@
 import { hashPassword, comparePasswords } from "../utils/password";
-import { FilteredUser } from "../models/dtos/user_dto";
-import { users_role } from "@prisma/client";
+import { UserRequest, UserResponse } from "../models/dtos/user_dto";
+import { user_role } from "@prisma/client";
 import db from "../configs/database";
 
-export async function getAllUsers(): Promise<FilteredUser[]> {
-  const rows = await db.users.findMany({
+export function getAllUsers(): Promise<UserResponse[]> {
+  const rows = db.users.findMany({
     select: { id: true, email: true, role: true },
   });
   return rows;
 }
 
-export async function getUserById(id: number): Promise<FilteredUser | null> {
-  const row = await db.users.findUnique({
+export function getUserById(id: number): Promise<UserResponse | null> {
+  const row = db.users.findUnique({
     where: { id },
     select: { id: true, email: true, role: true },
   });
   return row;
 }
 
-export async function getUserByEmail(
-  email: string,
-  password?: string
-): Promise<FilteredUser | null> {
+export async function getUserByEmail(email: string, password?: string): Promise<UserResponse | null> {
   const row = await db.users.findUnique({
     where: { email },
     select: { id: true, email: true, password: true, role: true },
@@ -35,13 +32,9 @@ export async function getUserByEmail(
   return null;
 }
 
-export async function createUser(
-  email: string,
-  password: string,
-  role: users_role | undefined
-): Promise<FilteredUser> {
+export async function createUser(email: string, password: string, role: user_role | undefined): Promise<UserResponse> {
   const hashedPassword = await hashPassword(password);
-  const result = await db.users.create({
+  const result = db.users.create({
     data: { email, password: hashedPassword, role },
     select: { id: true, email: true, role: true },
   });
