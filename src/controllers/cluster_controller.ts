@@ -1,3 +1,4 @@
+import { AuthenticatedRequest } from "../middlewares/auth_middleware";
 import { AddClusterSchema } from "../models/schemas/cluster_schema";
 import { AddClusterRequest } from "../models/dtos/cluster_dto";
 import { validateRequestBody } from "../utils/request_util";
@@ -34,8 +35,11 @@ export async function fetchClusterById(req: Request, res: Response, next: NextFu
   }
 }
 
-export async function addCluster(req: Request, res: Response, next: NextFunction) {
+export async function addCluster(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
+    const user = req.user;
+    if (!user || user.role == "sales") throw AppError.Forbidden("authentication", "Akses terhadap endpoint dilarang");
+
     const rawBody = req.body;
     const parsedBody = {
       ...rawBody,
@@ -68,4 +72,13 @@ export async function addCluster(req: Request, res: Response, next: NextFunction
   }
 }
 
-export async function removeClusterById(req: Request, res: Response, next: NextFunction) {}
+export async function removeClusterById(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const user = req.user;
+    if (!user || user.role == "sales") throw AppError.Forbidden("authentication", "Akses terhadap endpoint dilarang");
+
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+}

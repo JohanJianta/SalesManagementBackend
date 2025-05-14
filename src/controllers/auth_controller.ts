@@ -11,6 +11,8 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
     const validatedData = validateRequestBody<UserRequest>(req.body, RegisterSchema);
     const { email, password, role } = validatedData;
 
+    if (role != "sales") throw AppError.Forbidden("role", `Anda tidak memiliki akses untuk membuat user ${role}`);
+
     const existingUser = await getUserByEmail(email);
     if (existingUser) throw AppError.Conflict("email", "Email sudah terdaftar");
 
@@ -28,7 +30,7 @@ export async function loginUser(req: Request, res: Response, next: NextFunction)
     const { email, password } = validatedData;
 
     const user = await getUserByEmail(email, password);
-    if (!user) throw AppError.Unauthorized("email & password", "User tidak valid");
+    if (!user) throw AppError.Unauthorized("authentication", "User tidak valid");
 
     const token = generateToken(user);
     res.send({ token, payload: user });

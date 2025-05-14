@@ -27,6 +27,8 @@ const router = Router();
  *                 $ref: '#/components/schemas/AuthResponse'
  *         400:
  *           description: Bad Request
+ *         403:
+ *           description: Forbidden
  *         409:
  *           description: Conflict
  *         500:
