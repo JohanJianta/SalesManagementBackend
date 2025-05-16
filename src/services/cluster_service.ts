@@ -36,8 +36,8 @@ export async function getAllClusters(): Promise<AllClustersResponse> {
   const processedRows = rows.map((row) => {
     const { products, thumbnail_url, ...rest } = row;
     const available_unit = products.reduce((sum, product) => sum + product._count.product_units, 0);
-    const signedUrl = getFileFromS3(thumbnail_url);
-    return { ...rest, available_unit, thumbnail_url: signedUrl };
+    const signedThumbnailUrl = thumbnail_url ? getFileFromS3(thumbnail_url) : null;
+    return { ...rest, available_unit, thumbnail_url: signedThumbnailUrl };
   });
 
   const masterplan_url = getFileFromS3(""); // default URL ("/") is masterplan URL
@@ -86,20 +86,22 @@ export async function getClusterById(id: number): Promise<ClusterDetailResponse 
     return { ...restProduct, default_price: price1, corner_price: price2, thumbnail_url };
   });
 
-  const signedUrl = getFileFromS3(map_url);
-  const processedRow = { ...rest, products: processedProducts, map_url: signedUrl };
+  const signedMapUrl = map_url ? getFileFromS3(map_url) : null;
+  const processedRow = { ...rest, products: processedProducts, map_url: signedMapUrl };
   return processedRow;
 }
 
 export async function createCluster(
   clusterData: AddClusterRequest,
-  thumbnail: Express.Multer.File,
-  map: Express.Multer.File
+  thumbnail: Express.Multer.File | null,
+  map: Express.Multer.File | null
 ): Promise<AddClusterResponse> {
   const { image_hotspots, ...rest } = clusterData;
 
-  const thumbnail_url = await uploadFileToS3(thumbnail.buffer, thumbnail.mimetype, `${rest.name}/thumbnail`);
-  const map_url = await uploadFileToS3(map.buffer, map.mimetype, `${rest.name}/map`);
+  const thumbnail_url = thumbnail
+    ? await uploadFileToS3(thumbnail.buffer, thumbnail.mimetype, `${rest.name}/thumbnail`)
+    : null;
+  const map_url = map ? await uploadFileToS3(map.buffer, map.mimetype, `${rest.name}/map`) : null;
 
   const result = await db.clusters.create({
     data: {
@@ -133,8 +135,6 @@ export async function createCluster(
 export async function deleteClusterById() {}
 
 export async function clusterExistsByName(name: string): Promise<boolean> {
-  const cluster = await db.clusters.findUnique({
-    where: { name },
-  });
+  const cluster = await db.clusters.findUnique({ where: { name } });
   return !!cluster;
 }

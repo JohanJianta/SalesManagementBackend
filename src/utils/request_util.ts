@@ -13,10 +13,11 @@ export function validateRequestBody<T>(reqBody: any, schema: ZodSchema): T {
   return parsed.data;
 }
 
-export function getSingleFile(files: Express.Multer.File[], field: string): Express.Multer.File {
+export function getSingleFile(files: Express.Multer.File[], field: string): Express.Multer.File | null {
   const matchingFiles = files.filter((f) => f.fieldname === field);
   if (matchingFiles.length === 0) {
-    throw AppError.BadRequest(field, `File ${field} diperlukan`);
+    // throw AppError.BadRequest(field, `File ${field} diperlukan`);
+    return null;
   } else if (matchingFiles.length > 1) {
     throw AppError.BadRequest(field, `Hanya satu file yang diperbolehkan untuk ${field}`);
   }

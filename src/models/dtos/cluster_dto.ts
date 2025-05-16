@@ -53,6 +53,7 @@ import { cluster_category, image_hotspot_shape, product_unit_type } from "@prism
  *           example: false
  *         thumbnail_url:
  *           type: string
+ *           nullable: true
  *           example: https://example.com/thumbnail/treasure-island.jpg
  *         available_unit:
  *           type: integer
@@ -88,7 +89,6 @@ import { cluster_category, image_hotspot_shape, product_unit_type } from "@prism
  *           example: 3000000000
  *         thumbnail_url:
  *           type: string
- *           format: uri
  *           example: https://example.com/images/product_1_main.jpg
  *         image_hotspots:
  *           type: array
@@ -124,13 +124,14 @@ import { cluster_category, image_hotspot_shape, product_unit_type } from "@prism
  *         is_apartment:
  *           type: boolean
  *           example: false
+ *         map_url:
+ *           type: string
+ *           nullable: true
+ *           example: https://example.com/map/treasure-island.jpg
  *         products:
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/BriefProduct'
- *         map_url:
- *           type: string
- *           example: https://example.com/map/treasure-island.jpg
  */
 
 export interface AddClusterRequest {
@@ -147,8 +148,8 @@ export interface AddClusterResponse {
   category: cluster_category;
   is_apartment: boolean;
   address: string;
-  thumbnail_url: string;
-  map_url: string;
+  thumbnail_url: string | null;
+  map_url: string | null;
   image_hotspots: ImageHotspot[];
 }
 
@@ -162,7 +163,7 @@ export interface ClusterDetailResponse {
   category: cluster_category;
   address: string;
   is_apartment: boolean;
-  map_url: string;
+  map_url: string | null;
   products: BriefProduct[];
 }
 
@@ -171,7 +172,7 @@ interface BriefCluster {
   name: string;
   category: cluster_category;
   is_apartment: boolean;
-  thumbnail_url: string;
+  thumbnail_url: string | null;
   available_unit: number;
   image_hotspots: ImageHotspot[];
 }
@@ -190,7 +191,7 @@ interface BriefProduct {
   name: string;
   default_price: number;
   corner_price: number;
-  thumbnail_url: string | null;
+  thumbnail_url: string;
   image_hotspots: ImageHotspot[];
   product_units: BriefProductUnit[];
 }

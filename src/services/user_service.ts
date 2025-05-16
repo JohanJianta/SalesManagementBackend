@@ -1,5 +1,5 @@
 import { hashPassword, comparePasswords } from "../utils/password";
-import { UserRequest, UserResponse } from "../models/dtos/user_dto";
+import { UserResponse } from "../models/dtos/user_dto";
 import { user_role } from "@prisma/client";
 import db from "../configs/database";
 
