@@ -1,4 +1,3 @@
-import { AuthenticatedRequest } from "../middlewares/auth_middleware";
 import { getProductById } from "../services/product_service";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app_error";
@@ -16,22 +15,16 @@ export async function fetchProductById(req: Request, res: Response, next: NextFu
   }
 }
 
-export async function addProduct(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function addProduct(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = req.user;
-    if (!user || user.role == "sales") throw AppError.Forbidden("authentication", "Akses terhadap endpoint dilarang");
-
     res.status(204).send();
   } catch (err) {
     next(err);
   }
 }
 
-export async function removeProductById(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function removeProductById(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = req.user;
-    if (!user || user.role == "sales") throw AppError.Forbidden("authentication", "Akses terhadap endpoint dilarang");
-
     res.status(204).send();
   } catch (err) {
     next(err);

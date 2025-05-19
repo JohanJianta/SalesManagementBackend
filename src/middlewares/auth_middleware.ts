@@ -21,6 +21,14 @@ export function authenticateJWT(req: AuthenticatedRequest, res: Response, next: 
   }
 }
 
+export function authenticateUserRole(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const user = req.user;
+  if (!user || user.role == "sales") {
+    throw AppError.Forbidden("authentication", "Akses terhadap endpoint dilarang");
+  }
+  next();
+}
+
 export interface AuthenticatedRequest extends Request {
   user?: UserResponse;
 }

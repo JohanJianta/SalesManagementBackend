@@ -1,5 +1,6 @@
 import { endpointNotFoundHandler, globalErrorHandler } from "./utils/app_error";
 import { authenticateJWT } from "./middlewares/auth_middleware";
+import promotionRoutes from "./routes/promotion_routes";
 import clusterRoutes from "./routes/cluster_routes";
 import productRoutes from "./routes/product_routes";
 import userRoutes from "./routes/user_routes";
@@ -19,6 +20,7 @@ app.use("/api", authRoutes);
 app.use("/api", authenticateJWT, userRoutes);
 app.use("/api", authenticateJWT, clusterRoutes);
 app.use("/api", authenticateJWT, productRoutes);
+app.use("/api", authenticateJWT, promotionRoutes);
 swaggerApp(app);
 
 app.use(endpointNotFoundHandler);

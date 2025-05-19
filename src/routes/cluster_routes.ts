@@ -1,4 +1,5 @@
 import { fetchClusters, fetchClusterById, addCluster, removeClusterById } from "../controllers/cluster_controller";
+import { authenticateUserRole } from "../middlewares/auth_middleware";
 import { fileUpload } from "../middlewares/multer_middleware";
 import { Router } from "express";
 
@@ -60,7 +61,7 @@ router.get("/clusters", fetchClusters);
  */
 router.get("/clusters/:id", fetchClusterById);
 
-router.post("/clusters", fileUpload, addCluster);
-router.delete("/clusters/:id", removeClusterById);
+router.post("/clusters", authenticateUserRole, fileUpload, addCluster);
+router.delete("/clusters/:id", authenticateUserRole, removeClusterById);
 
 export default router;

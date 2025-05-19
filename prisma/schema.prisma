@@ -20,6 +20,7 @@ model clusters {
   updated_at     DateTime                 @default(now()) @db.Timestamp(0)
   products       products[]
   image_hotspots cluster_image_hotspots[]
+  promotions     promotions[]
 }
 
 model cluster_image_hotspots {
@@ -119,13 +120,14 @@ model product_units {
 }
 
 model users {
-  id         Int        @id @default(autoincrement()) @db.UnsignedInt
-  email      String     @unique(map: "users_email_unique") @db.VarChar(255)
-  password   String     @db.VarChar(255)
-  role       user_role  @default(sales)
-  created_at DateTime   @default(now()) @db.DateTime(0)
-  updated_at DateTime   @default(now()) @db.Timestamp(0)
+  id         Int          @id @default(autoincrement()) @db.UnsignedInt
+  email      String       @unique(map: "users_email_unique") @db.VarChar(255)
+  password   String       @db.VarChar(255)
+  role       user_role    @default(sales)
+  created_at DateTime     @default(now()) @db.DateTime(0)
+  updated_at DateTime     @default(now()) @db.Timestamp(0)
   bookings   bookings[]
+  promotions promotions[]
 }
 
 model customers {
@@ -153,6 +155,23 @@ model bookings {
   @@index([customer_id], map: "bookings_customer_id_foreign")
   @@index([unit_id], map: "bookings_unit_id_foreign")
   @@index([user_id], map: "bookings_user_id_foreign")
+}
+
+model promotions {
+  id            Int       @id @default(autoincrement()) @db.UnsignedInt
+  cluster_id    Int?      @db.UnsignedInt
+  user_id       Int       @db.UnsignedInt
+  title         String    @db.VarChar(255)
+  content       String    @db.Text
+  thumbnail_url String    @db.VarChar(255)
+  created_at    DateTime  @default(now()) @db.DateTime(0)
+  expired_at    DateTime? @db.DateTime(0)
+
+  clusters clusters? @relation(fields: [cluster_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "promotions_cluster_id_foreign")
+  users    users     @relation(fields: [user_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "promotions_user_id_foreign")
+
+  @@index([cluster_id], map: "promotions_cluster_id_foreign")
+  @@index([user_id], map: "promotions_user_id_foreign")
 }
 
 enum cluster_category {
