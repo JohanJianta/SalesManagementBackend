@@ -1,4 +1,5 @@
-import { cluster_category, image_hotspot_shape, product_unit_type } from "@prisma/client";
+import { cluster_category, image_hotspot_shape } from "@prisma/client";
+import { ProductUnit } from "./product_dto";
 
 /**
  * @openapi
@@ -62,16 +63,6 @@ import { cluster_category, image_hotspot_shape, product_unit_type } from "@prism
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/ImageHotspot'
- *     BriefProductUnit:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           example: A1
- *         type:
- *           type: string
- *           enum: [standard, corner]
- *           example: standard
  *     BriefProduct:
  *       type: object
  *       properties:
@@ -97,7 +88,7 @@ import { cluster_category, image_hotspot_shape, product_unit_type } from "@prism
  *         product_units:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/BriefProductUnit'
+ *             $ref: '#/components/schemas/ProductUnit'
  *     AllClustersResponse:
  *       type: object
  *       properties:
@@ -193,10 +184,5 @@ interface BriefProduct {
   corner_price: number;
   thumbnail_url: string;
   image_hotspots: ImageHotspot[];
-  product_units: BriefProductUnit[];
-}
-
-interface BriefProductUnit {
-  name: string;
-  type: product_unit_type;
+  product_units: ProductUnit[];
 }
