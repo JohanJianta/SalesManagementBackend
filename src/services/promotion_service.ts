@@ -1,7 +1,8 @@
+import { BriefPromotion, PromotionDetail } from "../models/dtos/promotion_dto";
 import { getFileFromS3 } from "../utils/s3_command";
 import db from "../configs/database";
 
-export async function getAllPromotions() {
+export async function getAllPromotions(): Promise<BriefPromotion[]> {
   const rows = await db.promotions.findMany({
     where: {
       OR: [{ expired_at: null }, { expired_at: { gt: new Date() } }],
@@ -18,7 +19,7 @@ export async function getAllPromotions() {
   return rows;
 }
 
-export async function getPromotionById(id: number) {
+export async function getPromotionById(id: number): Promise<PromotionDetail | null> {
   const row = await db.promotions.findUnique({
     where: {
       id,

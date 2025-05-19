@@ -32,14 +32,16 @@ export async function getProductById(id: number): Promise<ProductResponse | null
   });
 
   if (!row) return null;
-  const { default_price, corner_price, product_images, clusters, ...rest } = row;
-  const processedImages = product_images.map((image) => getFileFromS3(image.image_url));
+  const { default_price, corner_price, brochure_url, product_images, clusters, ...rest } = row;
+  const signedBrochureUrl = brochure_url ? getFileFromS3(brochure_url) : null;
+  const signedImages = product_images.map((image) => getFileFromS3(image.image_url));
 
   const processedRow = {
     ...rest,
     default_price: Number(default_price),
     corner_price: Number(corner_price),
-    product_images: processedImages,
+    brochure_url: signedBrochureUrl,
+    product_images: signedImages,
     cluster: clusters,
   };
   return processedRow;

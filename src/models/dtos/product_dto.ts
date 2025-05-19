@@ -52,6 +52,7 @@ import { product_unit_type } from "@prisma/client";
  *           example: Alexandrite
  *         brochure_url:
  *           type: string
+ *           nullable: true
  *           example: https://example.com/brochure/alexandrite.jpg
  *         default_price:
  *           type: number
