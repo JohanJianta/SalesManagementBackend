@@ -69,7 +69,7 @@ export async function getClusterById(id: number): Promise<ClusterDetailResponse 
           },
           product_units: {
             where: { status: "ready" },
-            select: { name: true, type: true },
+            select: { id: true, name: true, type: true },
           },
         },
       },

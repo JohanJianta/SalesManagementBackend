@@ -7,6 +7,9 @@ import { product_unit_type } from "@prisma/client";
  *     ProductUnit:
  *       type: object
  *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
  *         name:
  *           type: string
  *           example: A1
@@ -41,6 +44,38 @@ import { product_unit_type } from "@prisma/client";
  *         name:
  *           type: string
  *           example: Treasure Island
+ *     BriefProduct:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: Alexandrite
+ *         default_price:
+ *           type: number
+ *           example: 1000000000
+ *         corner_price:
+ *           type: number
+ *           example: 3000000000
+ *         units:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/ProductUnit'
+ *     ClusterProductUnit:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: Alexandrite
+ *         products:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/BriefProduct'
  *     ProductResponse:
  *       type: object
  *       properties:
@@ -80,9 +115,7 @@ import { product_unit_type } from "@prisma/client";
  *           items:
  *             $ref: '#/components/schemas/ProductSpecification'
  *         cluster:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/ClusterReference'
+ *           $ref: '#/components/schemas/ClusterReference'
  */
 
 export interface ProductResponse {
@@ -99,8 +132,23 @@ export interface ProductResponse {
 }
 
 export interface ProductUnit {
+  id: number;
   name: string;
   type: product_unit_type;
+}
+
+export interface ClusterProductUnit {
+  id: number;
+  name: string;
+  products: BriefProduct[];
+}
+
+interface BriefProduct {
+  id: number;
+  name: string;
+  default_price: number;
+  corner_price: number;
+  units: ProductUnit[];
 }
 
 interface ProductFeature {

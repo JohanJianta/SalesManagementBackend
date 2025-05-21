@@ -56,7 +56,7 @@ export async function addCluster(req: Request, res: Response, next: NextFunction
     const map = getSingleFile(files, "map");
 
     const cluster = await createCluster(validatedData, thumbnail, map);
-    res.send(cluster);
+    res.status(201).send(cluster);
   } catch (err) {
     next(err);
   }

@@ -1,9 +1,31 @@
-import { addProduct, fetchProductById, removeProductById } from "../controllers/product_controller";
+import { addProduct, fetchProductById, fetchProductUnits, removeProductById } from "../controllers/product_controller";
 import { authenticateUserRole } from "../middlewares/auth_middleware";
 import { fileUpload } from "../middlewares/multer_middleware";
 import { Router } from "express";
 
 const router = Router();
+
+/**
+ * @openapi
+ * paths:
+ *   /products:
+ *     get:
+ *       tags:
+ *         - Products
+ *       summary: Get all available product units (grouped by cluster and product)
+ *       responses:
+ *         200:
+ *           description: Success
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/ClusterProductUnit'
+ *         401:
+ *           description: Unauthorized
+ *         500:
+ *           description: Internal Server Error
+ */
+router.get("/products", fetchProductUnits);
 
 /**
  * @openapi

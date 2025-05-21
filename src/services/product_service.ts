@@ -1,4 +1,4 @@
-import { ProductResponse } from "../models/dtos/product_dto";
+import { ClusterProductUnit, ProductResponse, ProductUnit } from "../models/dtos/product_dto";
 import { getFileFromS3 } from "../utils/s3_command";
 import db from "../configs/database";
 
@@ -23,7 +23,7 @@ export async function getProductById(id: number): Promise<ProductResponse | null
       },
       product_units: {
         where: { status: "ready" },
-        select: { name: true, type: true },
+        select: { id: true, name: true, type: true },
       },
       clusters: {
         select: { id: true, name: true },
@@ -45,6 +45,56 @@ export async function getProductById(id: number): Promise<ProductResponse | null
     cluster: clusters,
   };
   return processedRow;
+}
+
+export async function getAllProductUnits(): Promise<ClusterProductUnit[]> {
+  const rows = await db.clusters.findMany({
+    select: {
+      id: true,
+      name: true,
+      products: {
+        select: {
+          id: true,
+          name: true,
+          default_price: true,
+          corner_price: true,
+          product_units: {
+            where: { status: "ready" },
+            select: { id: true, name: true, type: true },
+          },
+        },
+      },
+    },
+  });
+
+  const processedRows = rows.map((cluster) => {
+    const { products, ...restCluster } = cluster;
+    const processedProducts = products.map((product) => {
+      const { default_price, corner_price, product_units, ...restProduct } = product;
+      return {
+        ...restProduct,
+        default_price: Number(default_price),
+        corner_price: Number(corner_price),
+        units: product_units,
+      };
+    });
+    return { ...restCluster, products: processedProducts };
+  });
+
+  return processedRows;
+}
+
+export function getProductUnitById(id: number) {
+  const row = db.product_units.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      status: true,
+    },
+  });
+  return row;
 }
 
 export function createProduct() {}

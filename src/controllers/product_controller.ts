@@ -1,6 +1,15 @@
-import { getProductById } from "../services/product_service";
+import { getAllProductUnits, getProductById } from "../services/product_service";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app_error";
+
+export async function fetchProductUnits(req: Request, res: Response, next: NextFunction) {
+  try {
+    const clusters = await getAllProductUnits();
+    res.send(clusters);
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function fetchProductById(req: Request, res: Response, next: NextFunction) {
   try {

@@ -134,10 +134,20 @@ model customers {
   id                    Int        @id @default(autoincrement()) @db.UnsignedInt
   identification_number String     @unique(map: "customers_identification_number_unique") @db.Char(16)
   name                  String     @db.VarChar(255)
-  phone                 String     @db.VarChar(13)
   created_at            DateTime   @default(now()) @db.DateTime(0)
   updated_at            DateTime   @default(now()) @db.Timestamp(0)
   bookings              bookings[]
+  phones                phones[]
+}
+
+model phones {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  customer_id Int       @db.UnsignedInt
+  phone       String    @unique(map: "phones_phone_unique") @db.VarChar(13)
+  created_at  DateTime  @default(now()) @db.DateTime(0)
+  customers   customers @relation(fields: [customer_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "phones_customer_id_foreign")
+
+  @@index([customer_id], map: "phones_customer_id_foreign")
 }
 
 model bookings {
@@ -145,6 +155,7 @@ model bookings {
   unit_id       Int            @db.UnsignedInt
   user_id       Int            @db.UnsignedInt
   customer_id   Int            @db.UnsignedInt
+  dp_price      BigInt         @db.BigInt
   status        booking_status @default(pending)
   created_at    DateTime       @default(now()) @db.DateTime(0)
   updated_at    DateTime       @default(now()) @db.Timestamp(0)
