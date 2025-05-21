@@ -1,4 +1,4 @@
-import { fetchClusters, fetchClusterById, addCluster, removeClusterById } from "../controllers/cluster_controller";
+import { addProduct, fetchProductById, fetchProductUnits, removeProductById } from "../controllers/product_controller";
 import { authenticateUserRole } from "../middlewares/auth_middleware";
 import { fileUpload } from "../middlewares/multer_middleware";
 import { Router } from "express";
@@ -8,33 +8,33 @@ const router = Router();
 /**
  * @openapi
  * paths:
- *   /clusters:
+ *   /products:
  *     get:
  *       tags:
- *         - Clusters
- *       summary: Get all clusters
+ *         - Products
+ *       summary: Get all available product units (grouped by cluster and product)
  *       responses:
  *         200:
  *           description: Success
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/AllClustersResponse'
+ *                 $ref: '#/components/schemas/ClusterProductUnit'
  *         401:
  *           description: Unauthorized
  *         500:
  *           description: Internal Server Error
  */
-router.get("/clusters", fetchClusters);
+router.get("/products", fetchProductUnits);
 
 /**
  * @openapi
  * paths:
- *   /clusters/{id}:
+ *   /products/{id}:
  *     get:
  *       tags:
- *         - Clusters
- *       summary: Get cluster detail by ID
+ *         - Products
+ *       summary: Get product detail by ID
  *       parameters:
  *         - in: path
  *           name: id
@@ -42,14 +42,14 @@ router.get("/clusters", fetchClusters);
  *           schema:
  *             type: integer
  *             example: 1
- *           description: ID of the cluster
+ *           description: ID of the product
  *       responses:
  *         200:
  *           description: Success
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/ClusterDetailResponse'
+ *                 $ref: '#/components/schemas/ProductResponse'
  *         400:
  *           description: Bad Request
  *         401:
@@ -59,9 +59,9 @@ router.get("/clusters", fetchClusters);
  *         500:
  *           description: Internal Server Error
  */
-router.get("/clusters/:id", fetchClusterById);
+router.get("/products/:id", fetchProductById);
 
-router.post("/clusters", authenticateUserRole, fileUpload, addCluster);
-router.delete("/clusters/:id", authenticateUserRole, removeClusterById);
+router.post("/products", authenticateUserRole, fileUpload, addProduct);
+router.delete("/products/:id", authenticateUserRole, removeProductById);
 
 export default router;

@@ -1,40 +1,47 @@
-import { fetchClusters, fetchClusterById, addCluster, removeClusterById } from "../controllers/cluster_controller";
 import { authenticateUserRole } from "../middlewares/auth_middleware";
 import { fileUpload } from "../middlewares/multer_middleware";
 import { Router } from "express";
+import {
+  fetchPromotions,
+  fetchPromotionById,
+  addPromotion,
+  removePromotionById,
+} from "../controllers/promotion_controller";
 
 const router = Router();
 
 /**
  * @openapi
  * paths:
- *   /clusters:
+ *   /promotions:
  *     get:
  *       tags:
- *         - Clusters
- *       summary: Get all clusters
+ *         - Promotions
+ *       summary: Get all promotions
  *       responses:
  *         200:
  *           description: Success
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/AllClustersResponse'
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/BriefPromotion'
  *         401:
  *           description: Unauthorized
  *         500:
  *           description: Internal Server Error
  */
-router.get("/clusters", fetchClusters);
+router.get("/promotions", fetchPromotions);
 
 /**
  * @openapi
  * paths:
- *   /clusters/{id}:
+ *   /promotions/{id}:
  *     get:
  *       tags:
- *         - Clusters
- *       summary: Get cluster detail by ID
+ *         - Promotions
+ *       summary: Get promotion detail by ID
  *       parameters:
  *         - in: path
  *           name: id
@@ -42,14 +49,14 @@ router.get("/clusters", fetchClusters);
  *           schema:
  *             type: integer
  *             example: 1
- *           description: ID of the cluster
+ *           description: ID of the promotion
  *       responses:
  *         200:
  *           description: Success
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/ClusterDetailResponse'
+ *                 $ref: '#/components/schemas/PromotionDetail'
  *         400:
  *           description: Bad Request
  *         401:
@@ -59,9 +66,9 @@ router.get("/clusters", fetchClusters);
  *         500:
  *           description: Internal Server Error
  */
-router.get("/clusters/:id", fetchClusterById);
+router.get("/promotions/:id", fetchPromotionById);
 
-router.post("/clusters", authenticateUserRole, fileUpload, addCluster);
-router.delete("/clusters/:id", authenticateUserRole, removeClusterById);
+router.post("/promotions", authenticateUserRole, fileUpload, addPromotion);
+router.delete("/promotions/:id", authenticateUserRole, removePromotionById);
 
 export default router;

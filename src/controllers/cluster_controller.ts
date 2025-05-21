@@ -1,17 +1,10 @@
-import { AuthenticatedRequest } from "../middlewares/auth_middleware";
+import { getAllClusters, getClusterById, createCluster, clusterExistsByName } from "../services/cluster_service";
 import { AddClusterSchema } from "../models/schemas/cluster_schema";
 import { AddClusterRequest } from "../models/dtos/cluster_dto";
 import { validateRequestBody } from "../utils/request_util";
 import { Request, Response, NextFunction } from "express";
 import { getSingleFile } from "../utils/request_util";
 import { AppError } from "../utils/app_error";
-import {
-  getAllClusters,
-  getClusterById,
-  createCluster,
-  deleteClusterById,
-  clusterExistsByName,
-} from "../services/cluster_service";
 
 export async function fetchClusters(req: Request, res: Response, next: NextFunction) {
   try {
@@ -35,11 +28,8 @@ export async function fetchClusterById(req: Request, res: Response, next: NextFu
   }
 }
 
-export async function addCluster(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function addCluster(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = req.user;
-    if (!user || user.role == "sales") throw AppError.Forbidden("authentication", "Akses terhadap endpoint dilarang");
-
     const rawBody = req.body;
     const parsedBody = {
       ...rawBody,
@@ -66,17 +56,14 @@ export async function addCluster(req: AuthenticatedRequest, res: Response, next:
     const map = getSingleFile(files, "map");
 
     const cluster = await createCluster(validatedData, thumbnail, map);
-    res.send(cluster);
+    res.status(201).send(cluster);
   } catch (err) {
     next(err);
   }
 }
 
-export async function removeClusterById(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function removeClusterById(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = req.user;
-    if (!user || user.role == "sales") throw AppError.Forbidden("authentication", "Akses terhadap endpoint dilarang");
-
     res.status(204).send();
   } catch (err) {
     next(err);
