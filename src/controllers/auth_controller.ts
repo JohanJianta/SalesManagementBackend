@@ -1,22 +1,22 @@
 import { RegisterSchema, LoginSchema } from "../models/schemas/auth_schema";
+import { RegisterRequest, LoginRequest } from "../models/dtos/user_dto";
 import { createUser, getUserByEmail } from "../services/user_service";
+import { validateRequestBody } from "../utils/request_util";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app_error";
 import { generateToken } from "../utils/jwt";
-import { validateRequestBody } from "../utils/request_util";
-import { UserRequest } from "../models/dtos/user_dto";
 
 export async function registerUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const validatedData = validateRequestBody<UserRequest>(req.body, RegisterSchema);
-    const { email, password, role } = validatedData;
+    const validatedData = validateRequestBody<RegisterRequest>(req.body, RegisterSchema);
+    const { email, role } = validatedData;
 
     if (role != "sales") throw AppError.Forbidden("role", `Anda tidak memiliki akses untuk membuat user ${role}`);
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) throw AppError.Conflict("email", "Email sudah terdaftar");
 
-    const newUser = await createUser(email, password, role);
+    const newUser = await createUser(validatedData);
     const token = generateToken(newUser);
     res.status(201).send({ token, payload: newUser });
   } catch (err) {
@@ -26,7 +26,7 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
 
 export async function loginUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const validatedData = validateRequestBody<UserRequest>(req.body, LoginSchema);
+    const validatedData = validateRequestBody<LoginRequest>(req.body, LoginSchema);
     const { email, password } = validatedData;
 
     const user = await getUserByEmail(email, password);

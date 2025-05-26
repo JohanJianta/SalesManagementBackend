@@ -13,6 +13,15 @@ export function validateRequestBody<T>(reqBody: any, schema: ZodSchema): T {
   return parsed.data;
 }
 
+export function safeJsonParse<T>(value: string, fallback: T): T {
+  try {
+    const parsed = JSON.parse(value);
+    return parsed ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export function getSingleFile(files: Express.Multer.File[], field: string): Express.Multer.File | null {
   const matchingFiles = files.filter((f) => f.fieldname === field);
   if (matchingFiles.length === 0) {

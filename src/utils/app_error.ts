@@ -49,6 +49,10 @@ export const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => 
     res.status(400).json({
       errors: [{ field: err.field, message: err.message }],
     });
+  } else if (err instanceof SyntaxError && "body" in err) {
+    res.status(400).json({
+      errors: [{ field: "body", message: "Request body harus berupa JSON yang valid" }],
+    });
   } else {
     console.error(err.stack);
     res.status(500).json({

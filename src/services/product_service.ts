@@ -26,21 +26,20 @@ export async function getProductById(id: number): Promise<ProductResponse | null
         select: { id: true, name: true, type: true },
       },
       clusters: {
-        select: { id: true, name: true },
+        select: { id: true, name: true, brochure_url: true },
       },
     },
   });
 
   if (!row) return null;
-  const { default_price, corner_price, brochure_url, product_images, clusters, ...rest } = row;
-  const signedBrochureUrl = brochure_url ? getFileFromS3(brochure_url) : null;
+  const { default_price, corner_price, product_images, clusters, ...rest } = row;
   const signedImages = product_images.map((image) => getFileFromS3(image.image_url));
+  clusters.brochure_url = clusters.brochure_url ? getFileFromS3(clusters.brochure_url) : null;
 
   const processedRow = {
     ...rest,
     default_price: Number(default_price),
     corner_price: Number(corner_price),
-    brochure_url: signedBrochureUrl,
     product_images: signedImages,
     cluster: clusters,
   };
@@ -84,7 +83,7 @@ export async function getAllProductUnits(): Promise<ClusterProductUnit[]> {
   return processedRows;
 }
 
-export function getProductUnitById(id: number) {
+export function getProductUnitById(id: number): Promise<ProductUnit | null> {
   const row = db.product_units.findUnique({
     where: { id },
     select: {

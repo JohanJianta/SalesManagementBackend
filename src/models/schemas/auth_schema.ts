@@ -4,12 +4,16 @@ import { z } from "zod";
  * @openapi
  * components:
  *   schemas:
- *     RegisterInput:
+ *     RegisterRequest:
  *       type: object
  *       required:
+ *         - name
  *         - email
  *         - password
  *       properties:
+ *         name:
+ *           type: string
+ *           example: John Doe
  *         email:
  *           type: string
  *           example: johndoe@test.com
@@ -20,7 +24,7 @@ import { z } from "zod";
  *           type: string
  *           enum: [admin, sales, manager]
  *           example: sales
- *     LoginInput:
+ *     LoginRequest:
  *       type: object
  *       required:
  *         - email
@@ -32,43 +36,33 @@ import { z } from "zod";
  *         password:
  *           type: string
  *           example: johndoe
- *     AuthResponse:
- *       type: object
- *       properties:
- *         token:
- *           type: string
- *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikp...
- *         payload:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *               example: 1
- *             email:
- *               type: string
- *               example: johndoe@test.com
- *             role:
- *               type: string
- *               enum: [admin, sales, manager]
- *               example: sales
  */
 
-export const RegisterSchema = z
-  .object({
-    email: z.string({ required_error: "Email diperlukan" }).trim().email({ message: "Email tidak valid" }),
-    password: z
-      .string({ required_error: "Password diperlukan" })
-      .trim()
-      .min(6, { message: "Password minimal 6 karakter" }),
-    role: z.enum(["admin", "sales", "manager"], {
+export const RegisterSchema = z.object({
+  name: z.string({ required_error: "Name diperlukan", invalid_type_error: "Name harus berupa string" }).trim(),
+  email: z
+    .string({ required_error: "Email diperlukan", invalid_type_error: "Email harus berupa string" })
+    .trim()
+    .email({ message: "Email tidak valid" }),
+  password: z
+    .string({ required_error: "Password diperlukan", invalid_type_error: "Password harus berupa string" })
+    .trim()
+    .min(6, { message: "Password minimal 6 karakter" }),
+  role: z
+    .enum(["admin", "sales", "manager"], {
       errorMap: () => ({
         message: "Role harus salah satu dari: admin, sales, manager",
       }),
-    }),
-  })
-  .partial({ role: true });
+    })
+    .default("sales"),
+});
 
 export const LoginSchema = z.object({
-  email: z.string({ required_error: "Email diperlukan" }).trim().email({ message: "Email tidak valid" }),
-  password: z.string({ required_error: "Password diperlukan" }).trim(),
+  email: z
+    .string({ required_error: "Email diperlukan", invalid_type_error: "Email harus berupa string" })
+    .trim()
+    .email({ message: "Email tidak valid" }),
+  password: z
+    .string({ required_error: "Password diperlukan", invalid_type_error: "Password harus berupa string" })
+    .trim(),
 });

@@ -1,4 +1,4 @@
-import { product_unit_type } from "@prisma/client";
+import { product_unit_status, product_unit_type } from "@prisma/client";
 
 /**
  * @openapi
@@ -35,16 +35,7 @@ import { product_unit_type } from "@prisma/client";
  *         detail:
  *           type: string
  *           example: Bata ringan plester aci
- *     ClusterReference:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *           example: 1
- *         name:
- *           type: string
- *           example: Treasure Island
- *     BriefProduct:
+ *     ClusterProduct:
  *       type: object
  *       properties:
  *         id:
@@ -75,7 +66,7 @@ import { product_unit_type } from "@prisma/client";
  *         products:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/BriefProduct'
+ *             $ref: '#/components/schemas/ClusterProduct'
  *     ProductResponse:
  *       type: object
  *       properties:
@@ -85,10 +76,6 @@ import { product_unit_type } from "@prisma/client";
  *         name:
  *           type: string
  *           example: Alexandrite
- *         brochure_url:
- *           type: string
- *           nullable: true
- *           example: https://example.com/brochure/alexandrite.jpg
  *         default_price:
  *           type: number
  *           example: 1000000000
@@ -115,13 +102,23 @@ import { product_unit_type } from "@prisma/client";
  *           items:
  *             $ref: '#/components/schemas/ProductSpecification'
  *         cluster:
- *           $ref: '#/components/schemas/ClusterReference'
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: integer
+ *               example: 1
+ *             name:
+ *               type: string
+ *               example: Treasure Island
+ *             brochure_url:
+ *               type: string
+ *               nullable: true
+ *               example: https://example.com/brochure/treasure_island.jpg
  */
 
 export interface ProductResponse {
   id: number;
   name: string;
-  brochure_url: string | null;
   default_price: number;
   corner_price: number;
   product_images: string[];
@@ -135,15 +132,16 @@ export interface ProductUnit {
   id: number;
   name: string;
   type: product_unit_type;
+  status?: product_unit_status;
 }
 
 export interface ClusterProductUnit {
   id: number;
   name: string;
-  products: BriefProduct[];
+  products: ClusterProduct[];
 }
 
-interface BriefProduct {
+interface ClusterProduct {
   id: number;
   name: string;
   default_price: number;
@@ -164,4 +162,5 @@ interface ProductSpecification {
 interface ClusterReference {
   id: number;
   name: string;
+  brochure_url: string | null;
 }
