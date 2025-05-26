@@ -7,6 +7,7 @@ CREATE TABLE `clusters` (
     `address` VARCHAR(255) NOT NULL,
     `thumbnail_url` VARCHAR(255) NULL,
     `map_url` VARCHAR(255) NULL,
+    `brochure_url` VARCHAR(255) NULL,
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
@@ -18,11 +19,8 @@ CREATE TABLE `clusters` (
 CREATE TABLE `cluster_image_hotspots` (
     `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `cluster_id` INTEGER UNSIGNED NOT NULL,
-    `shape` ENUM('rectangle', 'circle') NOT NULL DEFAULT 'rectangle',
-    `x` FLOAT NOT NULL,
-    `y` FLOAT NOT NULL,
-    `width` FLOAT NULL,
-    `height` FLOAT NULL,
+    `shape` ENUM('rectangle', 'circle', 'polygon') NOT NULL DEFAULT 'rectangle',
+    `points` JSON NOT NULL,
     `radius` FLOAT NULL,
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
@@ -35,7 +33,6 @@ CREATE TABLE `products` (
     `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `cluster_id` INTEGER UNSIGNED NOT NULL,
     `name` VARCHAR(255) NOT NULL,
-    `brochure_url` VARCHAR(255) NULL,
     `default_price` BIGINT NOT NULL,
     `corner_price` BIGINT NOT NULL,
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
@@ -49,11 +46,8 @@ CREATE TABLE `products` (
 CREATE TABLE `product_image_hotspots` (
     `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `product_id` INTEGER UNSIGNED NOT NULL,
-    `shape` ENUM('rectangle', 'circle') NOT NULL DEFAULT 'rectangle',
-    `x` FLOAT NOT NULL,
-    `y` FLOAT NOT NULL,
-    `width` FLOAT NULL,
-    `height` FLOAT NULL,
+    `shape` ENUM('rectangle', 'circle', 'polygon') NOT NULL DEFAULT 'rectangle',
+    `points` JSON NOT NULL,
     `radius` FLOAT NULL,
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
@@ -114,6 +108,7 @@ CREATE TABLE `product_units` (
 -- CreateTable
 CREATE TABLE `users` (
     `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `role` ENUM('sales', 'manager', 'admin') NOT NULL DEFAULT 'sales',
@@ -129,11 +124,22 @@ CREATE TABLE `customers` (
     `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `identification_number` CHAR(16) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
-    `phone` VARCHAR(13) NOT NULL,
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
     UNIQUE INDEX `customers_identification_number_unique`(`identification_number`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `phones` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `customer_id` INTEGER UNSIGNED NOT NULL,
+    `phone` VARCHAR(13) NOT NULL,
+    `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
+    UNIQUE INDEX `phones_phone_unique`(`phone`),
+    INDEX `phones_customer_id_foreign`(`customer_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -143,6 +149,7 @@ CREATE TABLE `bookings` (
     `unit_id` INTEGER UNSIGNED NOT NULL,
     `user_id` INTEGER UNSIGNED NOT NULL,
     `customer_id` INTEGER UNSIGNED NOT NULL,
+    `dp_price` BIGINT NOT NULL,
     `status` ENUM('pending', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
     `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updated_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
@@ -150,6 +157,22 @@ CREATE TABLE `bookings` (
     INDEX `bookings_customer_id_foreign`(`customer_id`),
     INDEX `bookings_unit_id_foreign`(`unit_id`),
     INDEX `bookings_user_id_foreign`(`user_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `promotions` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `cluster_id` INTEGER UNSIGNED NULL,
+    `user_id` INTEGER UNSIGNED NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `content` TEXT NOT NULL,
+    `thumbnail_url` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `expired_at` DATETIME(0) NULL,
+
+    INDEX `promotions_cluster_id_foreign`(`cluster_id`),
+    INDEX `promotions_user_id_foreign`(`user_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -175,6 +198,9 @@ ALTER TABLE `product_specifications` ADD CONSTRAINT `product_specifications_prod
 ALTER TABLE `product_units` ADD CONSTRAINT `product_units_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE NO ACTION;
 
 -- AddForeignKey
+ALTER TABLE `phones` ADD CONSTRAINT `phones_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE RESTRICT ON UPDATE NO ACTION;
+
+-- AddForeignKey
 ALTER TABLE `bookings` ADD CONSTRAINT `bookings_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `product_units`(`id`) ON DELETE RESTRICT ON UPDATE NO ACTION;
 
 -- AddForeignKey
@@ -182,3 +208,9 @@ ALTER TABLE `bookings` ADD CONSTRAINT `bookings_user_id_foreign` FOREIGN KEY (`u
 
 -- AddForeignKey
 ALTER TABLE `bookings` ADD CONSTRAINT `bookings_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE RESTRICT ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE `promotions` ADD CONSTRAINT `promotions_cluster_id_foreign` FOREIGN KEY (`cluster_id`) REFERENCES `clusters`(`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE `promotions` ADD CONSTRAINT `promotions_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE NO ACTION;

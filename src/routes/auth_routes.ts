@@ -17,7 +17,7 @@ const router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/RegisterInput'
+ *               $ref: '#/components/schemas/RegisterRequest'
  *       responses:
  *         201:
  *           description: Success
@@ -50,7 +50,7 @@ router.post("/auth/register", registerUser);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/LoginInput'
+ *               $ref: '#/components/schemas/LoginRequest'
  *       responses:
  *         200:
  *           description: Success

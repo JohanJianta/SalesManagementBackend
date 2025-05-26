@@ -1,3 +1,4 @@
+import { InputJsonValue, JsonValue } from "@prisma/client/runtime/library";
 import { cluster_category, image_hotspot_shape } from "@prisma/client";
 import { ProductUnit } from "./product_dto";
 
@@ -5,12 +6,12 @@ import { ProductUnit } from "./product_dto";
  * @openapi
  * components:
  *   schemas:
- *     ImageHotspot:
+ *     ImageHotspotRectangle:
  *       type: object
  *       properties:
  *         shape:
  *           type: string
- *           enum: [rectangle, circle]
+ *           enum: [rectangle]
  *           example: rectangle
  *         x:
  *           type: integer
@@ -20,19 +21,56 @@ import { ProductUnit } from "./product_dto";
  *           example: 300
  *         width:
  *           type: integer
- *           nullable: true
  *           example: 100
- *           description: used if shape is 'rectangle'
  *         height:
  *           type: integer
- *           nullable: true
  *           example: 100
- *           description: used if shape is 'rectangle'
+ *     ImageHotspotCircle:
+ *       type: object
+ *       properties:
+ *         shape:
+ *           type: string
+ *           enum: [circle]
+ *           example: circle
+ *         x:
+ *           type: integer
+ *           example: 200
+ *         y:
+ *           type: integer
+ *           example: 300
  *         radius:
  *           type: integer
- *           nullable: true
- *           example: null
- *           description: used if shape is 'circle'
+ *           example: 50
+ *     ImageHotspotPolygon:
+ *       type: object
+ *       properties:
+ *         shape:
+ *           type: string
+ *           enum: [polygon]
+ *           example: polygon
+ *         points:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               x:
+ *                 type: integer
+ *                 example: 200
+ *               y:
+ *                 type: integer
+ *                 example: 300
+ *     ImageHotspot:
+ *       type: object
+ *       discriminator:
+ *         propertyName: shape
+ *         mapping:
+ *           rectangle: '#/components/schemas/ImageHotspotRectangle'
+ *           circle: '#/components/schemas/ImageHotspotCircle'
+ *           polygon: '#/components/schemas/ImageHotspotPolygon'
+ *       oneOf:
+ *         - $ref: '#/components/schemas/ImageHotspotRectangle'
+ *         - $ref: '#/components/schemas/ImageHotspotCircle'
+ *         - $ref: '#/components/schemas/ImageHotspotPolygon'
  *     BriefCluster:
  *       type: object
  *       properties:
@@ -130,7 +168,7 @@ export interface AddClusterRequest {
   category: cluster_category;
   address: string;
   is_apartment: boolean;
-  image_hotspots: ImageHotspot[];
+  image_hotspots: RawImageHotspot[];
 }
 
 export interface AddClusterResponse {
@@ -158,6 +196,31 @@ export interface ClusterDetailResponse {
   products: BriefProduct[];
 }
 
+export type ImageHotspot =
+  | {
+      shape: "rectangle";
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    }
+  | {
+      shape: "circle";
+      x: number;
+      y: number;
+      radius: number;
+    }
+  | {
+      shape: "polygon";
+      points: { x: number; y: number }[];
+    };
+
+export interface RawImageHotspot {
+  shape: image_hotspot_shape;
+  points: JsonValue | InputJsonValue;
+  radius: number | null;
+}
+
 interface BriefCluster {
   id: number;
   name: string;
@@ -168,21 +231,12 @@ interface BriefCluster {
   image_hotspots: ImageHotspot[];
 }
 
-interface ImageHotspot {
-  shape: image_hotspot_shape;
-  x: number;
-  y: number;
-  width: number | null;
-  height: number | null;
-  radius: number | null;
-}
-
 interface BriefProduct {
   id: number;
   name: string;
   default_price: number;
   corner_price: number;
-  thumbnail_url: string;
+  thumbnail_url: string | null;
   image_hotspots: ImageHotspot[];
   product_units: ProductUnit[];
 }
