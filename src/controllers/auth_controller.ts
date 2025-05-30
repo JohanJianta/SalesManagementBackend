@@ -16,9 +16,9 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
     const existingUser = await getUserByEmail(email);
     if (existingUser) throw AppError.Conflict("email", "Email sudah terdaftar");
 
-    const newUser = await createUser(validatedData);
-    const token = generateToken(newUser);
-    res.status(201).send({ token, payload: newUser });
+    const userResult = await createUser(validatedData);
+    const token = generateToken(userResult);
+    res.status(201).send({ token, payload: userResult });
   } catch (err) {
     next(err);
   }

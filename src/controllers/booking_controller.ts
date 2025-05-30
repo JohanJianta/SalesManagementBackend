@@ -14,8 +14,8 @@ export async function fetchBookings(req: AuthenticatedRequest, res: Response, ne
     const user = req.user;
     if (!user) throw Error;
 
-    const promotions = await getAllBookings(user.id);
-    res.send(promotions);
+    const bookings = await getAllBookings(user.id);
+    res.send(bookings);
   } catch (err) {
     next(err);
   }
@@ -103,10 +103,10 @@ export async function updateBookingStatus(req: AuthenticatedRequest, res: Respon
       throw AppError.Conflict("booking_id", `Booking sudah ${caused}`);
     }
 
-    const updatedData = await updateBookingStatusById(validatedData.booking_id, validatedData.status);
-    if (!updatedData) throw Error;
+    const updatedBooking = await updateBookingStatusById(validatedData.booking_id, validatedData.status);
+    if (!updatedBooking) throw Error;
 
-    res.send(updatedData);
+    res.send(updatedBooking);
   } catch (err) {
     next(err);
   }

@@ -41,12 +41,12 @@ export async function getProductById(id: number): Promise<ProductResponse | null
     default_price: Number(default_price),
     corner_price: Number(corner_price),
     product_images: signedImages,
-    cluster: clusters,
+    cluster_ref: clusters,
   };
   return processedRow;
 }
 
-export async function getAllProductUnits(): Promise<ClusterProductUnit[]> {
+export async function getAllClusterProductUnits(): Promise<ClusterProductUnit[]> {
   const rows = await db.clusters.findMany({
     select: {
       id: true,

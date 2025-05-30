@@ -1,11 +1,12 @@
-import { getAllProductUnits, getProductById } from "../services/product_service";
+import { getAllClusterProductUnits, getProductById } from "../services/product_service";
+import { getAllPromotions } from "../services/promotion_service";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app_error";
 
 export async function fetchProductUnits(req: Request, res: Response, next: NextFunction) {
   try {
-    const clusters = await getAllProductUnits();
-    res.send(clusters);
+    const clusterProductUnits = await getAllClusterProductUnits();
+    res.send(clusterProductUnits);
   } catch (err) {
     next(err);
   }
@@ -16,9 +17,12 @@ export async function fetchProductById(req: Request, res: Response, next: NextFu
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) throw AppError.BadRequest("id", "ID product tidak valid");
 
-    const cluster = await getProductById(Number(id));
-    if (!cluster) throw AppError.NotFound("id", "Product tidak ditemukan");
-    res.send(cluster);
+    const product = await getProductById(Number(id));
+    if (!product) throw AppError.NotFound("id", "Product tidak ditemukan");
+
+    const promotions = await getAllPromotions(product.cluster_ref.id);
+    product.cluster_ref.promotions = promotions;
+    res.send(product);
   } catch (err) {
     next(err);
   }

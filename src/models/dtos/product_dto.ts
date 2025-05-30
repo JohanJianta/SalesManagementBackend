@@ -1,4 +1,5 @@
 import { product_unit_status, product_unit_type } from "@prisma/client";
+import { BriefPromotion } from "./promotion_dto";
 
 /**
  * @openapi
@@ -67,6 +68,23 @@ import { product_unit_status, product_unit_type } from "@prisma/client";
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/ClusterProduct'
+ *     ClusterReference:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: Treasure Island
+ *         brochure_url:
+ *           type: string
+ *           nullable: true
+ *           example: https://example.com/brochure/treasure_island.jpg
+ *         promotions:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/BriefPromotion'
  *     ProductResponse:
  *       type: object
  *       properties:
@@ -101,19 +119,8 @@ import { product_unit_status, product_unit_type } from "@prisma/client";
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/ProductSpecification'
- *         cluster:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *               example: 1
- *             name:
- *               type: string
- *               example: Treasure Island
- *             brochure_url:
- *               type: string
- *               nullable: true
- *               example: https://example.com/brochure/treasure_island.jpg
+ *         cluster_ref:
+ *           $ref: '#/components/schemas/ClusterReference'
  */
 
 export interface ProductResponse {
@@ -125,7 +132,7 @@ export interface ProductResponse {
   product_units: ProductUnit[];
   product_features: ProductFeature[];
   product_specifications: ProductSpecification[];
-  cluster: ClusterReference;
+  cluster_ref: ClusterReference;
 }
 
 export interface ProductUnit {
@@ -163,4 +170,5 @@ interface ClusterReference {
   id: number;
   name: string;
   brochure_url: string | null;
+  promotions?: BriefPromotion[];
 }

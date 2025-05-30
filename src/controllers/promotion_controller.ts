@@ -17,9 +17,9 @@ export async function fetchPromotionById(req: Request, res: Response, next: Next
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) throw AppError.BadRequest("id", "ID promotion tidak valid");
 
-    const cluster = await getPromotionById(Number(id));
-    if (!cluster) throw AppError.NotFound("id", "Promotion tidak ditemukan");
-    res.send(cluster);
+    const promotion = await getPromotionById(Number(id));
+    if (!promotion) throw AppError.NotFound("id", "Promotion tidak ditemukan");
+    res.send(promotion);
   } catch (err) {
     next(err);
   }
