@@ -3,3 +3,4 @@ dist/
 prisma/generated_client/
 keys/
 .env
+.env.*

@@ -2,8 +2,12 @@ node_modules/
 dist/
 prisma/generated_client/
 keys/
+__test__/
+*.test.ts
 README.md
+jest.config.*
 .env
+.env.*
 .git
 .github
 .gitignore

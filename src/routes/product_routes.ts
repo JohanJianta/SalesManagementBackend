@@ -19,7 +19,9 @@ const router = Router();
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/ClusterProductUnit'
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/ClusterProductUnit'
  *         401:
  *           description: Unauthorized
  *         500:

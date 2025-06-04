@@ -3,13 +3,15 @@
     "target": "ES2024",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
+    "isolatedModules": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
+    "types": ["jest", "node"],
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "__tests__/**/*"]
 }
