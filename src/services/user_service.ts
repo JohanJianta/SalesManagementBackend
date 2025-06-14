@@ -22,13 +22,13 @@ export async function getUserByEmail(email: string, password?: string): Promise<
     where: { email },
     select: { id: true, name: true, email: true, password: true, role: true },
   });
+  if (!row) return null;
 
-  if (row && (!password || (await comparePasswords(password, row.password)))) {
-    const { password: _, ...filteredRow } = row;
-    return filteredRow;
-  }
+  const isPasswordValid = password !== undefined ? await comparePasswords(password, row.password) : true;
+  if (!isPasswordValid) return null;
 
-  return null;
+  const { password: _, ...filteredRow } = row;
+  return filteredRow;
 }
 
 export async function createUser(registerData: RegisterRequest): Promise<UserResponse> {
