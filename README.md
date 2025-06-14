@@ -195,10 +195,10 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
 Proyek ini menggunakan Swagger untuk mendokumentasikan REST API yang dikembangkan.
 
 Halaman dokumentasi dari Swagger dapat diakses melalui URL berikut.  
-http://ec2-18-139-110-33.ap-southeast-1.compute.amazonaws.com:3000/api-docs
+http://ec2-18-139-110-33.ap-southeast-1.compute.amazonaws.com/api-docs
   
 Untuk dokumentasi dalam bentuk JSON dapat diakses melalui URL berikut.  
-http://ec2-18-139-110-33.ap-southeast-1.compute.amazonaws.com:3000/api-docs.json
+http://ec2-18-139-110-33.ap-southeast-1.compute.amazonaws.com/api-docs.json
 
 ## Explanation of Choices
 
