@@ -34,7 +34,7 @@ const router = Router();
  *         500:
  *           description: Internal Server Error
  */
-router.post("/auth/register", registerUser);
+router.post("/register", registerUser);
 
 /**
  * @openapi
@@ -65,6 +65,6 @@ router.post("/auth/register", registerUser);
  *         500:
  *           description: Internal Server Error
  */
-router.post("/auth/login", loginUser);
+router.post("/login", loginUser);
 
 export default router;

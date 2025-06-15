@@ -32,7 +32,7 @@ const router = Router();
  *         500:
  *           description: Internal Server Error
  */
-router.get("/bookings", fetchBookings);
+router.get("/", fetchBookings);
 
 /**
  * @openapi
@@ -66,7 +66,7 @@ router.get("/bookings", fetchBookings);
  *         500:
  *           description: Internal Server Error
  */
-router.get("/bookings/:id", fetchBookingById);
+router.get("/:id", fetchBookingById);
 
 /**
  * @openapi
@@ -100,7 +100,7 @@ router.get("/bookings/:id", fetchBookingById);
  *         500:
  *           description: Internal Server Error
  */
-router.post("/bookings", addBooking);
+router.post("/", addBooking);
 
 /**
  * @openapi
@@ -134,8 +134,8 @@ router.post("/bookings", addBooking);
  *         500:
  *           description: Internal Server Error
  */
-router.put("/bookings", updateBookingStatus);
+router.put("/", updateBookingStatus);
 
-router.delete("/bookings/:id", authenticateUserRole, removeBookingById);
+router.delete("/:id", authenticateUserRole, removeBookingById);
 
 export default router;

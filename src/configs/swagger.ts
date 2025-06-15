@@ -5,7 +5,6 @@ import swaggerJsDoc from "swagger-jsdoc";
 import "dotenv/config";
 
 const ec2PublicIp = process.env.EC2_PUBLIC_IP as string;
-const port = parseInt(process.env.PORT || "3000", 10);
 
 const swaggerOptions: swaggerJsDoc.Options = {
   definition: {
@@ -17,7 +16,7 @@ const swaggerOptions: swaggerJsDoc.Options = {
     },
     servers: [
       {
-        url: `http://${ec2PublicIp}:${port}/api`,
+        url: `http://${ec2PublicIp}/api`,
         description: "EC2 Production Server",
       },
     ],

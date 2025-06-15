@@ -1,6 +1,7 @@
 # Sales Management Backend
 
 Team Members:
+
 - Johan Reinaldo Jianta - 0806022210005
 - Rayhan Alkhafi Ifkanulsyahdan - 0806022210010
 
@@ -41,9 +42,17 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
 - **Security**: Block all public access
 - **Region**: ap-southeast-1
 
+### 4) Amazon CloudFront
+
+- **Instance type**: Single website or app
+- **Origin domain**: Amazon S3 (previously created bucket)
+- **Orifin access**: Legacy access identities (create new OAI & update the bucket policy)
+- **Viewer protocol policy**: Redirect HTTP to HTTPS
+- **Web Application Firewall**: Do not enable security protections
+
 ## Setup Instructions
 
-- Create an instance for each of EC2, RDS, and S3, following the specifications above.
+- Create an instance for each of EC2, RDS, S3, and CloudFront following the specifications above.
 - Create a custom policy that references the ARN of the created S3 bucket and grants these permissions:
 
   | Access | Action       | Task                |
@@ -82,8 +91,8 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
       become: yes
 
       vars:
-        env_path: <path_to_env_file>
-        remote_project_directory: <project_directory_on_ec2>
+        backend_local_path: <project_directory_on_local>
+        backend_remote_path: <project_directory_on_EC2>
         dockerhub_image: <backend_image_on_dockerhub>
 
       tasks:
@@ -136,21 +145,37 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
 
         - name: Ensure remote project directory exists
           ansible.builtin.file:
-            path: "{{ remote_project_directory }}"
+            path: "{{ backend_remote_path }}"
             state: directory
             mode: "0755"
 
         - name: Copy backend environment file to AWS Node
           ansible.builtin.copy:
-            src: "{{ env_path }}"
-            dest: "{{ remote_project_directory }}/.env"
+            src: "{{ backend_local_path }}/.env"
+            dest: "{{ backend_remote_path }}/.env"
+            owner: ubuntu
+            group: ubuntu
+            mode: "0600"
+
+        - name: Ensure keys folder exists inside remote project directory
+          ansible.builtin.file:
+            path: "{{ backend_remote_path }}/keys"
+            state: directory
+            mode: "0700"
+            owner: ubuntu
+            group: ubuntu
+
+        - name: Copy CloudFront private key to remote project directory
+          ansible.builtin.copy:
+            src: "{{ backend_local_path }}/keys/cloudfront_private_key.pem"
+            dest: "{{ backend_remote_path }}/keys/cloudfront_private_key.pem"
             owner: ubuntu
             group: ubuntu
             mode: "0600"
 
         - name: Create docker-compose.yml in remote project directory
           ansible.builtin.copy:
-            dest: "{{ remote_project_directory }}/docker-compose.yml"
+            dest: "{{ backend_remote_path }}/docker-compose.yml"
             content: |
               services:
                 backend:
@@ -160,6 +185,8 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
                     - .env
                   ports:
                     - "3000:3000"
+                  volumes:
+                    - ./keys:/app/keys:ro
                   restart: always
             owner: ubuntu
             group: ubuntu
@@ -192,19 +219,20 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
 
 ## REST API Documentation
 
-Proyek ini menggunakan Swagger untuk mendokumentasikan REST API yang dikembangkan.
+This project uses Swagger to document the developed REST API.
 
-Halaman dokumentasi dari Swagger dapat diakses melalui URL berikut.  
+The Swagger documentation page can be accessed at the following URL :  
 http://ec2-18-139-110-33.ap-southeast-1.compute.amazonaws.com/api-docs
-  
-Untuk dokumentasi dalam bentuk JSON dapat diakses melalui URL berikut.  
+
+The JSON format documentation can be accessed at the following URL :  
 http://ec2-18-139-110-33.ap-southeast-1.compute.amazonaws.com/api-docs.json
 
 ## Explanation of Choices
 
 The configuration of this backend project was carefully chosen to align with the goals of scalability, cost efficiency, and deployment automation, especially within the AWS Free Tier.
+
 - **Amazon EC2** (t2.micro) was selected for its eligibility under the Free Tier and sufficient resources for containerized backend services.
 - **Amazon RDS** with MySQL was chosen for its managed database capabilities, seamless integration with Prisma ORM, and support for relational queries essential to the system’s structure.
-- **Amazon S3**, paired with **CloudFront**, provides secure and efficient storage and distribution of static assets, while public access is disabled to ensure data security.
+- **Amazon S3**, paired with **Amazon CloudFront**, provides secure and efficient storage and distribution of static assets, while public access is disabled to ensure data security.
 - **GitHub Actions** enables a fully automated CI/CD pipeline, improving deployment speed and reliability.
 - **Ansible-based** automation setup on EC2, simplifies infrastructure management and ensures consistent deployment environments.

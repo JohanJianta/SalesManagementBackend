@@ -32,7 +32,7 @@ const router = Router();
  *         500:
  *           description: Internal Server Error
  */
-router.get("/promotions", fetchPromotions);
+router.get("/", fetchPromotions);
 
 /**
  * @openapi
@@ -66,9 +66,9 @@ router.get("/promotions", fetchPromotions);
  *         500:
  *           description: Internal Server Error
  */
-router.get("/promotions/:id", fetchPromotionById);
+router.get("/:id", fetchPromotionById);
 
-router.post("/promotions", authenticateUserRole, fileUpload, addPromotion);
-router.delete("/promotions/:id", authenticateUserRole, removePromotionById);
+router.post("/", authenticateUserRole, fileUpload, addPromotion);
+router.delete("/:id", authenticateUserRole, removePromotionById);
 
 export default router;

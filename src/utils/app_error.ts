@@ -38,7 +38,9 @@ export class AppError extends Error {
 }
 
 export const endpointNotFoundHandler: RequestHandler = (req, res, next) => {
-  const err = new AppError(404, [{ field: "endpoint", message: `Endpoint '${req.originalUrl}' tidak ditemukan` }]);
+  const err = new AppError(404, [
+    { field: "endpoint", message: `Endpoint ${req.method} '${req.originalUrl}' tidak ditemukan` },
+  ]);
   next(err);
 };
 

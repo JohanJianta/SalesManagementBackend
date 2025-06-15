@@ -25,7 +25,7 @@ const router = Router();
  *         500:
  *           description: Internal Server Error
  */
-router.get("/clusters", fetchClusters);
+router.get("/", fetchClusters);
 
 /**
  * @openapi
@@ -59,9 +59,9 @@ router.get("/clusters", fetchClusters);
  *         500:
  *           description: Internal Server Error
  */
-router.get("/clusters/:id", fetchClusterById);
+router.get("/:id", fetchClusterById);
 
-router.post("/clusters", authenticateUserRole, fileUpload, addCluster);
-router.delete("/clusters/:id", authenticateUserRole, removeClusterById);
+router.post("/", authenticateUserRole, fileUpload, addCluster);
+router.delete("/:id", authenticateUserRole, removeClusterById);
 
 export default router;

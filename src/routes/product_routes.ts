@@ -27,7 +27,7 @@ const router = Router();
  *         500:
  *           description: Internal Server Error
  */
-router.get("/products", fetchProductUnits);
+router.get("/", fetchProductUnits);
 
 /**
  * @openapi
@@ -61,9 +61,9 @@ router.get("/products", fetchProductUnits);
  *         500:
  *           description: Internal Server Error
  */
-router.get("/products/:id", fetchProductById);
+router.get("/:id", fetchProductById);
 
-router.post("/products", authenticateUserRole, fileUpload, addProduct);
-router.delete("/products/:id", authenticateUserRole, removeProductById);
+router.post("/", authenticateUserRole, fileUpload, addProduct);
+router.delete("/:id", authenticateUserRole, removeProductById);
 
 export default router;

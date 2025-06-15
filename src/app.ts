@@ -15,12 +15,12 @@ const app = express();
 app.use(cors());
 app.use(json());
 
-app.use("/api", authRoutes);
-app.use("/api", authenticateJWT, userRoutes);
-app.use("/api", authenticateJWT, clusterRoutes);
-app.use("/api", authenticateJWT, productRoutes);
-app.use("/api", authenticateJWT, promotionRoutes);
-app.use("/api", authenticateJWT, bookingRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", authenticateJWT, userRoutes);
+app.use("/api/clusters", authenticateJWT, clusterRoutes);
+app.use("/api/products", authenticateJWT, productRoutes);
+app.use("/api/promotions", authenticateJWT, promotionRoutes);
+app.use("/api/bookings", authenticateJWT, bookingRoutes);
 swaggerApp(app);
 
 app.use(endpointNotFoundHandler);
