@@ -23,7 +23,7 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
   | Type   | Port | Source       | Task          |
   | ------ | ---- | ------------ | ------------- |
   | SSH    | 22   | IP Developer | Remote access |
-  | HHTP   | 80   | 0.0.0.0/0    | Web service   |
+  | HTTP   | 80   | 0.0.0.0/0    | Web service   |
   | HTTPS  | 443  | 0.0.0.0/0    | SSL           |
   | Custom | 3000 | 0.0.0.0/0    | ExpressJS     |
 
@@ -46,7 +46,7 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
 
 - **Instance type**: Single website or app
 - **Origin domain**: Amazon S3 (previously created bucket)
-- **Orifin access**: Legacy access identities (create new OAI & update the bucket policy)
+- **Origin access**: Legacy access identities (create new OAI & update the bucket policy)
 - **Viewer protocol policy**: Redirect HTTP to HTTPS
 - **Web Application Firewall**: Do not enable security protections
 
@@ -62,7 +62,7 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
   | Write  | DeleteObject | Remove files        |
 
 - Create an IAM user, attach the custom policy, then create an access key for accessing the S3 bucket via S3 Client SDK.
-- Create .env file with the following variables inside:
+- Create a `.env` file with the following variables inside:
 
   | Variable          | Description                                   |
   | ----------------- | --------------------------------------------- |
@@ -78,12 +78,12 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
 
   - Open ansible inventory and add EC2 as managed node.
 
-    ```
+    ```yaml
     [aws]
     ec2_node ansible_host=<ec2_host> ansible_user=<ec2_user> ansible_ssh_private_key_file=<path_to_key_pair>
     ```
 
-  - Create a playbook named "cloud_backend_setup.yml".
+  - Create a playbook named `cloud_backend_setup.yml`.
 
     ```yaml
     - name: Configure EC2 Node for Deployment Automation
@@ -195,15 +195,13 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
 
   - Run the playbook.
 
-    ```
-
+    ```yaml
     ansible-playbook cloud_backend_setup.yml
-
     ```
 
 ## Deployment Instructions
 
-- Generate a Personal Access Token for Docker Hub account with “Read, Write, Delete” permissions.
+- Generate a Personal Access Token for Docker Hub account with `Read`, `Write`, and `Delete` permissions.
 - Create secrets and variables for GitHub Actions on repository Settings:
 
   | Name               | Type     | Description                      |
@@ -215,7 +213,7 @@ This project implements Amazon Web Services (AWS) free tier-based backend infras
   | DOCKERHUB_USERNAME | Variable | Docker Hub username              |
   | DOCKERHUB_IMAGE    | Variable | Backend image name on Docker Hub |
 
-- Push to master branch to trigger the GitHub Actions.
+- Push to `master` branch to trigger the GitHub Actions.
 
 ## REST API Documentation
 
