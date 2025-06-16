@@ -1,6 +1,7 @@
 import { endpointNotFoundHandler, globalErrorHandler } from "./utils/app_error";
 import { authenticateJWT } from "./middlewares/auth_middleware";
 import promotionRoutes from "./routes/promotion_routes";
+import downloadRoutes from "./routes/download_routes";
 import bookingRoutes from "./routes/booking_routes";
 import clusterRoutes from "./routes/cluster_routes";
 import productRoutes from "./routes/product_routes";
@@ -15,6 +16,7 @@ const app = express();
 app.use(cors());
 app.use(json());
 
+app.use("/api/downloads", downloadRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", authenticateJWT, userRoutes);
 app.use("/api/clusters", authenticateJWT, clusterRoutes);
